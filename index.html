@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataViz & AI Prompt Craft - Prompt Studio, Data Charts & Color Utilities</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
+
+    <!-- GOOGLE ADSENSE MASTER SCRIPT -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4321543724878495" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-4321543724878495">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('prompt-tool')">
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">DataViz & Prompt</span>
+                        <span class="text-xs bg-brand-100 dark:bg-brand-900 text-brand-800 dark:text-brand-200 px-2 py-0.5 rounded-full font-semibold ml-1">Craft</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden xl:flex space-x-1">
+                    <button onclick="switchTab('prompt-tool')" id="nav-prompt-tool" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-gray-700 transition">
+                        <i class="fa-solid fa-brain mr-1"></i> AI Prompt Craft
+                    </button>
+                    <button onclick="switchTab('dataviz-tool')" id="nav-dataviz-tool" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-chart-column mr-1"></i> Chart Studio
+                    </button>
+                    <button onclick="switchTab('palette-tool')" id="nav-palette-tool" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-palette mr-1"></i> Color Studio
+                    </button>
+                    <button onclick="switchTab('text-tool')" id="nav-text-tool" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-font mr-1"></i> Text Tools
+                    </button>
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-circle-info mr-1"></i> About Us
+                    </button>
+                    <button onclick="switchTab('privacy')" id="nav-privacy" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-user-shield mr-1"></i> Privacy
+                    </button>
+                    <button onclick="switchTab('terms')" id="nav-terms" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-file-contract mr-1"></i> Terms
+                    </button>
+                    <button onclick="switchTab('contact')" id="nav-contact" class="nav-btn px-3 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-envelope mr-1"></i> Contact
+                    </button>
+                </nav>
+
+                <!-- Actions -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none" title="Toggle Theme">
+                        <i id="theme-icon" class="fa-solid fa-sun text-lg"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="xl:hidden p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden xl:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 pt-2 pb-3 space-y-1">
+            <button onclick="switchTab('prompt-tool')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">AI Prompt Craft</button>
+            <button onclick="switchTab('dataviz-tool')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Chart Studio</button>
+            <button onclick="switchTab('palette-tool')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Color Studio</button>
+            <button onclick="switchTab('text-tool')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Text Tools</button>
+            <button onclick="switchTab('about')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About Us</button>
+            <button onclick="switchTab('privacy')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Privacy Policy</button>
+            <button onclick="switchTab('terms')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Terms of Service</button>
+            <button onclick="switchTab('contact')" class="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Contact Support</button>
+        </div>
+    </header>
+
+    <!-- AD SLOT 1: HEADER LEADERBOARD (COMPLETELY BLANK CONTAINER, NO LABELS) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 text-center min-h-[90px] flex items-center justify-center overflow-hidden">
+            <ins class="adsbygoogle"
+                 style="display:block; width:100%;"
+                 data-ad-client="ca-pub-4321543724878495"
+                 data-ad-slot="1000000001"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- MAIN WORKSPACE (8 COLS) -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- TOOL 1: AI PROMPT CRAFT & OPTIMIZER -->
+                <section id="tool-prompt-tool" class="tab-content bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">AI Prompt Craft & Optimizer Studio</h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Structure system role, target context, key task, and strict constraints into high-performing LLM prompts.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-brain text-xl"></i></span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">1. System Persona / Role Definition</label>
+                            <input type="text" id="prompt-role" placeholder="e.g. Senior Full-Stack Software Engineer & Technical Architect" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">2. Core Objective / Main Task</label>
+                            <textarea id="prompt-task" rows="3" placeholder="e.g. Refactor a legacy JavaScript function into modern TypeScript with async/await and robust error handling." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500 transition"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">3. Input Context / Data</label>
+                                <textarea id="prompt-context" rows="3" placeholder="e.g. Target framework is Node.js 20, using standard ES modules." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500 transition"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">4. Negative Constraints / Style</label>
+                                <textarea id="prompt-constraints" rows="3" placeholder="e.g. Do not use external third-party libraries. Return clean comments." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500 transition"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="generatePrompt()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl transition shadow-sm"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Assemble Prompt</button>
+                            <button onclick="copyToClipboard('prompt-output')" class="px-4 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs font-semibold rounded-xl transition ml-auto"><i class="fa-regular fa-copy mr-1"></i> Copy Formatted</button>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 mb-1">Generated Structured Prompt</label>
+                            <textarea id="prompt-output" readonly rows="6" placeholder="Your assembled prompt will appear here ready to copy into ChatGPT, Claude, or Gemini..." class="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-900 font-mono text-xs text-gray-800 dark:text-gray-200 outline-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Indexable Article Content for AdSense Compliance -->
+                    <article class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 space-y-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Mastering Structured Prompt Engineering</h3>
+                        <p>Prompt engineering is the strategic art of crafting instructions for Large Language Models (LLMs) to ensure predictable, accurate, and high-quality outputs. Modern AI architectures, including GPT-4, Claude 3.5, and Gemini Pro, perform substantially better when provided with clear role framing, explicit context boundaries, and distinct negative constraints.</p>
+                        <p>By enforcing a four-part prompt structure (Role, Task, Context, Constraints), engineers eliminate hallucination vulnerabilities and significantly cut down on iterative clarifying responses.</p>
+                    </article>
+                </section>
+
+                <!-- TOOL 2: DATA VISUALIZER & CHART STUDIO -->
+                <section id="tool-dataviz-tool" class="tab-content hidden bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Interactive Data Visualizer & Chart Studio</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Transform raw tabular data into beautiful responsive HTML5 Canvas charts instantly.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-chart-column text-xl"></i></span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Chart Type</label>
+                            <select id="chart-type" onchange="renderChart()" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none">
+                                <option value="bar">Bar Chart</option>
+                                <option value="line">Line Graph</option>
+                                <option value="pie">Pie Chart</option>
+                                <option value="doughnut">Doughnut Chart</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Chart Title</label>
+                            <input type="text" id="chart-title-input" oninput="renderChart()" value="Quarterly Performance Overview" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Labels (Comma Separated)</label>
+                            <input type="text" id="chart-labels-input" oninput="renderChart()" value="Q1 Sales, Q2 Sales, Q3 Sales, Q4 Sales" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Values (Comma Separated)</label>
+                            <input type="text" id="chart-data-input" oninput="renderChart()" value="4200, 5800, 7100, 8900" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl min-h-[300px] flex items-center justify-center relative">
+                        <canvas id="main-chart" class="max-h-[320px] w-full"></canvas>
+                    </div>
+
+                    <!-- Indexable Article Content for AdSense Compliance -->
+                    <article class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 space-y-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Principles of Effective Data Visualization</h3>
+                        <p>Data visualization bridges raw numerical analytics and cognitive decision making. Selecting the optimal chart representation is critical: Bar charts excel at comparing discrete categorical metrics, line charts accurately convey temporal trends over continuous intervals, while pie and doughnut charts illustrate proportional composition.</p>
+                        <p>Our client-side rendering engine relies on lightweight HTML5 Canvas rendering to guarantee rapid data processing without requiring external database storage or third-party web tracking.</p>
+                    </article>
+                </section>
+
+                <!-- AD SLOT 2: IN-FEED MID-PAGE BANNER (COMPLETELY BLANK CONTAINER, NO LABELS) -->
+                <div class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 text-center min-h-[120px] flex items-center justify-center overflow-hidden">
+                    <ins class="adsbygoogle"
+                         style="display:block; width:100%;"
+                         data-ad-client="ca-pub-4321543724878495"
+                         data-ad-slot="1000000002"
+                         data-ad-format="fluid"
+                         data-ad-layout-key="-fb+5w+4e-db+86"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+
+                <!-- TOOL 3: PALETTE GENERATOR & COLOR ACCESSIBILITY -->
+                <section id="tool-palette-tool" class="tab-content hidden bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Color Palette & Contrast Studio</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Generate harmonized color schemes and evaluate WCAG contrast compliance for digital UI design.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-palette text-xl"></i></span>
+                    </div>
+
+                    <div class="flex gap-2 mb-6">
+                        <button onclick="generateRandomPalette()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl transition"><i class="fa-solid fa-arrows-rotate mr-1"></i> Generate Palette</button>
+                    </div>
+
+                    <div id="palette-container" class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+                        <!-- Palette Cards injected by JS -->
+                    </div>
+
+                    <!-- Indexable Article Content for AdSense Compliance -->
+                    <article class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 space-y-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Color Theory & Digital Accessibility Standards</h3>
+                        <p>Designing digital user interfaces requires balancing aesthetic visual harmony with strict accessibility guidelines. The Web Content Accessibility Guidelines (WCAG 2.1) mandate a minimum contrast ratio of 4.5:1 for standard body text against background elements to accommodate visually impaired users.</p>
+                        <p>Leveraging mathematical color spaces such as HSL (Hue, Saturation, Lightness) enables seamless palette generation while preserving optimal readability across light and dark user application themes.</p>
+                    </article>
+                </section>
+
+                <!-- TOOL 4: TEXT TOOLS & WORD COUNTER -->
+                <section id="tool-text-tool" class="tab-content hidden bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Text Transformation & Analysis Suite</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Analyze word metrics, convert case formats, and clean raw text blocks.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-font text-xl"></i></span>
+                    </div>
+
+                    <textarea id="text-input" oninput="analyzeText()" rows="6" placeholder="Type or paste your content here to calculate real-time readability metrics..." class="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500 transition mb-4"></textarea>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                        <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-center">
+                            <span class="block text-xs uppercase text-gray-500 font-bold">Words</span>
+                            <span id="stat-words" class="text-xl font-bold text-brand-600 dark:text-brand-400">0</span>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-center">
+                            <span class="block text-xs uppercase text-gray-500 font-bold">Characters</span>
+                            <span id="stat-chars" class="text-xl font-bold text-brand-600 dark:text-brand-400">0</span>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-center">
+                            <span class="block text-xs uppercase text-gray-500 font-bold">Sentences</span>
+                            <span id="stat-sentences" class="text-xl font-bold text-brand-600 dark:text-brand-400">0</span>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-center">
+                            <span class="block text-xs uppercase text-gray-500 font-bold">Reading Time</span>
+                            <span id="stat-reading" class="text-xl font-bold text-brand-600 dark:text-brand-400">0m</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="convertCase('upper')" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs font-semibold rounded-lg">UPPERCASE</button>
+                        <button onclick="convertCase('lower')" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs font-semibold rounded-lg">lowercase</button>
+                        <button onclick="convertCase('title')" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs font-semibold rounded-lg">Title Case</button>
+                        <button onclick="cleanWhitespace()" class="px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-xs font-semibold rounded-lg">Clean Spaces</button>
+                        <button onclick="copyToClipboard('text-input')" class="px-3 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-lg ml-auto">Copy Text</button>
+                    </div>
+
+                    <!-- Indexable Article Content for AdSense Compliance -->
+                    <article class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8 space-y-3 text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white">Content Editing & Quantitative Text Analysis</h3>
+                        <p>Quantitative text statistics offer essential metrics for technical documentation specialists, digital copywriters, and content strategists. Tracking word counts and estimated reading durations ensures compliance with editorial constraints and search engine index optimization targets.</p>
+                    </article>
+                </section>
+
+                <!-- COMPLIANCE TAB 1: ABOUT US -->
+                <section id="tool-about" class="tab-content hidden space-y-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">About DataViz & AI Prompt Craft</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Our engineering mission, platform principles, and monetization disclosures.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-circle-info text-xl"></i></span>
+                    </div>
+
+                    <div class="space-y-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Our Mission</h3>
+                        <p>
+                            DataViz & AI Prompt Craft was established to provide free, high-performance web utility software for data analysts, prompt engineers, digital designers, and content creators. We believe essential tools for chart visualization, color contrast validation, and AI prompt engineering should be accessible instantly without cumbersome software installations or paid paywalls.
+                        </p>
+
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Client-Side Data Privacy</h3>
+                        <p>
+                            All tool operations—including chart generation, prompt assembly, color mathematical calculations, and text transformations—execute 100% locally inside your client web browser session. No input data, prompts, or tabular numbers are ever recorded, saved, or uploaded to any third-party cloud infrastructure.
+                        </p>
+
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Monetization & Transparency Statement</h3>
+                        <p>
+                            To keep our web tools free for users worldwide, DataViz & AI Prompt Craft displays advertisements served by third-party advertising networks, including Google AdSense. These networks may use cookies to serve ads tailored to user browsing patterns. We strictly maintain clean page layouts to guarantee user experience remains paramount.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- COMPLIANCE TAB 2: PRIVACY POLICY -->
+                <section id="tool-privacy" class="tab-content hidden space-y-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Privacy Policy</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Comprehensive data collection, cookie practices, and AdSense disclosures.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-user-shield text-xl"></i></span>
+                    </div>
+
+                    <div class="space-y-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">1. Data Collection Overview</h3>
+                        <p>
+                            We do not collect personal identifying data unless explicitly submitted by you via our contact form. Non-personally identifiable server interaction data (such as web browser version, operating system, and timestamp logs) may be collected automatically to maintain system security and web application stability.
+                        </p>
+
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">2. Cookies and Third-Party Advertising</h3>
+                        <p>
+                            Google and other third-party vendors use cookies to serve ads based on a user's prior visits to this website or other web properties on the Internet. Google's use of advertising cookies enables it and its partners to serve targeted ads to users based on their visit history across digital services.
+                        </p>
+                        <p>
+                            Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" class="text-brand-600 underline">Google Ads Settings</a> or by navigating to <a href="https://www.aboutads.info" target="_blank" rel="noopener" class="text-brand-600 underline">aboutads.info</a>.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- COMPLIANCE TAB 3: TERMS OF SERVICE -->
+                <section id="tool-terms" class="tab-content hidden space-y-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Terms of Service</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">User obligations and software usage terms.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-file-contract text-xl"></i></span>
+                    </div>
+
+                    <div class="space-y-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">1. Acceptable Use</h3>
+                        <p>
+                            By accessing DataViz & AI Prompt Craft, you agree to use our web application solely for lawful purposes. You agree not to attempt to disrupt application execution, bypass client-side security measures, or perform automated data scraping attacks.
+                        </p>
+
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">2. Disclaimer of Warranties</h3>
+                        <p>
+                            All tools, chart outputs, and prompt structures are provided "as-is" without explicit or implied warranties of any kind. Users assume full responsibility for validating prompt accuracy and chart data accuracy prior to commercial deployment.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- COMPLIANCE TAB 4: CONTACT SUPPORT -->
+                <section id="tool-contact" class="tab-content hidden space-y-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Contact & Support</h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Send feature suggestions, error reports, or platform inquiries.</p>
+                        </div>
+                        <span class="p-3 bg-brand-50 dark:bg-gray-700 text-brand-600 dark:text-brand-400 rounded-xl"><i class="fa-solid fa-envelope text-xl"></i></span>
+                    </div>
+
+                    <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Full Name</label>
+                            <input type="text" id="contact-name" required placeholder="Jordan Smith" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Email Address</label>
+                            <input type="email" id="contact-email" required placeholder="jordan@domain.org" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Message</label>
+                            <textarea id="contact-message" rows="4" required placeholder="Describe your request or technical suggestion..." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 text-sm outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        </div>
+                        <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm rounded-xl transition shadow-md"><i class="fa-solid fa-paper-plane mr-2"></i> Submit Inquiry</button>
+                    </form>
+                    <div id="contact-alert" class="hidden p-4 rounded-xl text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800">
+                        Thank you for reaching out! Your inquiry has been logged and our support team will respond shortly.
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- SIDEBAR AREA (4 COLS) -->
+            <aside class="lg:col-span-4 space-y-6">
+                <div class="sticky top-20 space-y-6">
+                    
+                    <!-- AD SLOT 3: STICKY SIDEBAR RECTANGLE (COMPLETELY BLANK CONTAINER, NO LABELS) -->
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-2 text-center min-h-[280px] flex items-center justify-center overflow-hidden">
+                        <ins class="adsbygoogle"
+                             style="display:block; width:100%;"
+                             data-ad-client="ca-pub-4321543724878495"
+                             data-ad-slot="1000000003"
+                             data-ad-format="rectangle"
+                             data-full-width-responsive="true"></ins>
+                        <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+
+                    <!-- Client Security Card -->
+                    <div class="bg-gradient-to-br from-brand-600 to-brand-800 text-white rounded-2xl p-6 shadow-md">
+                        <i class="fa-solid fa-lock text-3xl mb-3 text-brand-200"></i>
+                        <h3 class="text-lg font-bold">100% Client-Side Suite</h3>
+                        <p class="text-xs text-brand-100 mt-2 leading-relaxed">
+                            No data payloads leave your browser session. Complete security compliance for prompt crafting, chart generation, and text formatting.
+                        </p>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-brand-600 text-xl"></i>
+                    <span class="font-bold text-gray-900 dark:text-white">DataViz & AI Prompt Craft</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400">© 2026. All Rights Reserved.</span>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
+                    <a href="#" onclick="switchTab('about')" class="hover:underline">About Us</a>
+                    <a href="#" onclick="switchTab('privacy')" class="hover:underline">Privacy Policy</a>
+                    <a href="#" onclick="switchTab('terms')" class="hover:underline">Terms of Service</a>
+                    <a href="#" onclick="switchTab('contact')" class="hover:underline">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // Global Chart Variable
+        let activeChart = null;
+
+        // Page Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById('tool-' + tabId);
+            if(target) target.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-gray-700');
+                btn.classList.add('text-gray-600', 'dark:text-gray-300');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-gray-700');
+                activeBtn.classList.remove('text-gray-600', 'dark:text-gray-300');
+            }
+
+            if(tabId === 'dataviz-tool' && !activeChart) {
+                renderChart();
+            }
+        }
+
+        // Theme Toggle
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Tool 1: AI Prompt Craft Generator
+        function generatePrompt() {
+            const role = document.getElementById('prompt-role').value.trim();
+            const task = document.getElementById('prompt-task').value.trim();
+            const context = document.getElementById('prompt-context').value.trim();
+            const constraints = document.getElementById('prompt-constraints').value.trim();
+
+            let result = "";
+            if (role) result += `[SYSTEM ROLE]\nAct as a ${role}.\n\n`;
+            if (task) result += `[MAIN TASK]\n${task}\n\n`;
+            if (context) result += `[CONTEXT & DATA]\n${context}\n\n`;
+            if (constraints) result += `[CONSTRAINTS & RULES]\n${constraints}\n\n`;
+            result += `[OUTPUT REQUIREMENT]\nProvide a concise, direct response strictly adhering to the specified role and constraints above.`;
+
+            document.getElementById('prompt-output').value = result;
+        }
+
+        // Tool 2: Data Visualizer Chart Renderer
+        function renderChart() {
+            const ctx = document.getElementById('main-chart').getContext('2d');
+            const type = document.getElementById('chart-type').value;
+            const title = document.getElementById('chart-title-input').value;
+            const labelsStr = document.getElementById('chart-labels-input').value;
+            const dataStr = document.getElementById('chart-data-input').value;
+
+            const labels = labelsStr.split(',').map(s => s.trim());
+            const data = dataStr.split(',').map(s => parseFloat(s.trim()) || 0);
+
+            if (activeChart) {
+                activeChart.destroy();
+            }
+
+            activeChart = new Chart(ctx, {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(14, 165, 233, 0.7)',
+                            'rgba(168, 85, 247, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(236, 72, 153, 0.7)'
+                        ],
+                        borderColor: [
+                            '#16a34a',
+                            '#0284c7',
+                            '#9333ea',
+                            '#ea580c',
+                            '#db2777'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: true, text: title }
+                    }
+                }
+            });
+        }
+
+        // Tool 3: Color Palette Generator
+        function generateRandomPalette() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const hex = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                const div = document.createElement('div');
+                div.className = 'rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col items-center';
+                div.innerHTML = `
+                    <div class="w-full h-24" style="background-color: ${hex};"></div>
+                    <div class="p-2 w-full text-center bg-gray-50 dark:bg-gray-900">
+                        <span class="block text-xs font-mono font-bold">${hex.toUpperCase()}</span>
+                        <button onclick="copyColor('${hex}')" class="mt-1 text-[10px] text-brand-600 dark:text-brand-400 underline">Copy Hex</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function copyColor(hex) {
+            navigator.clipboard.writeText(hex);
+            alert("Copied color: " + hex);
+        }
+
+        // Tool 4: Text Tools & Analysis
+        function analyzeText() {
+            const text = document.getElementById('text-input').value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            const sentences = text.trim() ? text.split(/[.!?]+/).filter(Boolean).length : 0;
+            const readingTime = Math.ceil(words / 200);
+
+            document.getElementById('stat-words').innerText = words;
+            document.getElementById('stat-chars').innerText = chars;
+            document.getElementById('stat-sentences').innerText = sentences;
+            document.getElementById('stat-reading').innerText = readingTime + "m";
+        }
+
+        function convertCase(mode) {
+            const input = document.getElementById('text-input');
+            if (mode === 'upper') input.value = input.value.toUpperCase();
+            if (mode === 'lower') input.value = input.value.toLowerCase();
+            if (mode === 'title') {
+                input.value = input.value.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+            }
+            analyzeText();
+        }
+
+        function cleanWhitespace() {
+            const input = document.getElementById('text-input');
+            input.value = input.value.replace(/\s+/g, ' ').trim();
+            analyzeText();
+        }
+
+        // Clipboard Helper
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            el.select();
+            document.execCommand('copy');
+        }
+
+        // Contact Form Handling
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contact-form').reset();
+            const alert = document.getElementById('contact-alert');
+            alert.classList.remove('hidden');
+            setTimeout(() => alert.classList.add('hidden'), 4000);
+        }
+
+        // Initialization on Load
+        window.onload = function() {
+            generateRandomPalette();
+            analyzeText();
+        };
+    </script>
+</body>
+</html>
+```
